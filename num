@@ -1,0 +1,491 @@
+Sudo: What's cooking in git.git (Jun 2026, #11)
+Sudo: What's cooking in git.git (Jul 2026, #01)
+Repository navigation
+Code
+Issues
+Pull requests
+Actions
+We are having a problem billing your account. Please update your payment method or call your payment provider for details on why the transaction failed.
+You can contact support with any questions.
+Comparing changes
+Choose two branches to see what’s changed or to start a new pull request. If you need to, you can also  or learn more about diff comparisons.
+...
+There isn’t anything to compare.
+next and todo are entirely different commit histories.
+
+ Showing  with 275 additions and 144 deletions.
+  419 changes: 275 additions & 144 deletions419  
+whats-cooking.txt
+Original file line number	Diff line number	Diff line change
+@@ -1,23 +1,31 @@
+To: git@vger.kernel.org
+Subject: What's cooking in git.git (Jun 2026, #11)
+Subject: What's cooking in git.git (Jul 2026, #01)
+X-master-at: e9019fcafe0040228b8631c30f97ae1adb61bcdc
+X-next-at: 602f6c329a7d99df269d382df353b4e1bbbbd8aa
+Bcc: lwn@lwn.net, gitster@pobox.com
+
+What's cooking in git.git (Jun 2026, #15)
+What's cooking in git.git (Jul 2026, #20)
+-----------------------------------------
+
+Here are the topics that have been cooking in my tree.  Commits
+prefixed with '+' are in 'next' (being in 'next' is a sign that a
+topic is stable enough to be used and is a candidate to be in a
+future release).  Commits prefixed with '-' are only in 'seen', and
+aren't considered "accepted" at all and may be annotated with a URL
+aren't considered "accepted" at all. They may be annotated with a URL
+to a message that raises issues but they are by no means exhaustive.
+A topic without enough support may be discarded after a long period
+of no activity (of course they can be resubmitted when new interests
+arise).
+
+Git 2.55 (final) has been tagged, with a few last-minute fixes.
+of no activity (of course, it can be resubmitted when new interest
+arises).
+
+Subject: What's cooking in git.git (Jun 2026, #11)
+Subject: What's cooking in git.git (Jul 2026, #01)
+Git 2.55 (final) has been tagged.  The next release is tentatively
+called Git 2.56.  This week is the 0th week of the cycle, which is
+time to see if there are any brown paper bag breakages and
+regressions we need to fix.  Next week, I plan to start merging the
+topics that have been cooking in 'next' down to 'master'.  It has
+been customary to rewind 'next' and rebuild it on top of 'master'
+soon after a major release, but IIRC, we didn't do so in Git 2.55;
+perhaps we can do without rebuilding it this cycle as well.  We'll
+see.
+
+Copies of the source code to Git live in many repositories, and the
+following is a list of the ones I push into or their mirrors.  Some
+@@ -50,84 +58,167 @@ Release tarballs are available at:
+--------------------------------------------------
+[New Topics]
+
+* tb/repack-geometric-cruft (2026-06-28) 11 commits
+ - SQUASH??? bare grep !???
+ - repack: support combining '--geometric' with '--cruft'
+ - pack-objects: support '--refs-snapshot' with 'follow-reachable'
+ - pack-objects: introduce '--stdin-packs=follow-reachable'
+ - pack-objects: extract `stdin_packs_add_all_pack_entries()`
+ - repack-geometry: drop unused redundant-pack removal
+ - repack: delete geometric packs via existing_packs
+ - repack: teach MIDX retention about geometric rollups
+ - repack: mark geometric progression of packs as retained
+ - repack: extract `locate_existing_pack()` helper
+ - repack: unconditionally exclude non-kept packs
+* kk/commit-reach-find-all-fix (2026-06-29) 2 commits
+ - commit-reach: guard !FIND_ALL early exit with generation ordering check
+ - t6600: add test for merge-base early exit with clock skew
+
+ Teach `git repack` to accept `--geometric` and `--cruft`
+ together. When both are given, the geometric repack rolls up non-cruft
+ packs as usual, while a separate cruft pack is written to collect
+ unreachable objects.
+ The early-exit optimization in paint_down_to_common() has been gated
+ on the queue being generation-ordered. This fixes a bug where git
+ merge-base (without --all) could return incorrect results on
+ repositories with v1 commit graphs and clock skew.
+
+ Needs review.
+ cf. <xmqqpl1d56dd.fsf@gitster.g>
+ source: <cover.1782500507.git.me@ttaylorr.com>
+ Comments?
+ cf. <xmqqa4sdw55v.fsf@gitster.g>
+ source: <pull.2162.git.1782739162.gitgitgadget@gmail.com>
+
+
+* jk/reftable-leakfix (2026-06-28) 1 commit
+ - reftable: fix unlikely leak on API error
+* bl/t7412-use-test-path-helpers (2026-06-29) 1 commit
+ - submodule absorbgitdirs tests: use test_* helper functions
+
+ Leakfix.
+ t7412 that tests "git submodule absorbgitdirs" has been modernized to
+ use test_path_is_file, test_path_is_dir, and test_path_is_missing
+ helper functions instead of raw "test -[fde]" commands.
+
+ Will merge to 'next'?
+ cf. <akIPBJLtPqDjQt-A@pks.im>
+ source: <20260628090314.GA661068@coredump.intra.peff.net>
+ Waiting for response(s) to review comment(s).
+ cf. <akTKHfKPsP3-Rn31@pks.im>
+ source: <20260630020220.1559190-1-bblima@usp.br>
+
+
+* sg/t3420-do-not-grep-in-missing-file (2021-10-10) 1 commit
+  (merged to 'next' on 2026-06-29 at 2bf33c6a40)
+ + t3420-rebase-autostash: don't try to grep non-existing files
+* jk/format-patch-leakfix (2026-06-29) 2 commits
+ - format-patch: fix leak of rev_info in prepare_bases()
+ - t: move LSan errors from stdout to stderr
+
+ Test fix.
+ A memory leak in the '--base' handling of 'git format-patch' has been
+ plugged, and the leak-reporting of the test suite when running under a
+ TAP harness has been improved.
+
+ Will merge to 'master'.
+ source: <20211010172809.1472914-1-szeder.dev@gmail.com>
+ Will merge to 'next'?
+ cf. <akOZy-BygZS8fqPM@pks.im>
+ source: <20260630063944.GA3733670@coredump.intra.peff.net>
+
+
+* ps/setup-split-discovery-and-setup (2026-06-30) 16 commits
+ - setup: mark `set_git_work_tree()` as file-local
+ - setup: pass worktree to `init_db()`
+ - setup: drop redundant configuration of `startup_info->have_repository`
+ - setup: make repository discovery self-contained
+ - setup: propagate prefix via repository discovery
+ - setup: drop static `cwd` variable
+ - setup: move prefix into repository
+ - setup: embed repository format in discovery
+ - setup: introduce explicit repository discovery
+ - setup: split up concerns of `setup_git_env_internal()`
+ - setup: unify setup of shallow file
+ - setup: mark bogus worktree in `apply_repository_format()`
+ - setup: rename `check_repository_format_gently()`
+ - Merge branch 'jk/repo-info-path-keys' into ps/setup-split-discovery-and-setup
+ - Merge branch 'ps/setup-drop-global-state' into ps/setup-split-discovery-and-setup
+ - Merge branch 'ps/refs-onbranch-fixes' into ps/setup-split-discovery-and-setup
+ (this branch uses jk/repo-info-path-keys, ps/refs-onbranch-fixes and ps/setup-drop-global-state.)
+
+ The repository discovery and repository configuration phases, which
+ were previously intertwined in 'setup.c', have been split. Repository
+ discovery now populates a 'struct repo_discovery' without modifying
+ the repository state, and repository configuration takes this
+ structure to initialize the repository, paving the way for clean
+ unification of repository configuration.
+
+--------------------------------------------------
+[Graduated to 'master']
+ Needs review.
+ source: <20260630-pks-setup-split-discovery-and-setup-v1-0-13864eb5a032@pks.im>
+
+
+* pw/rebase-drop-notes-with-commit (2026-06-30) 15 commits
+ - amend! sequencer: simplify pick_one_commit()
+ - amend! sequencer: remove unnecessary "or" in pick_one_commit()
+ - fixup! sequencer: never reschedule on failed commit
+ - fixup! sequencer: be more careful with external merge
+ - sequencer: do not record dropped commits as rewritten
+ - sequencer: use an enum to represent result of picking a commit
+ - sequencer: return early from pick_one_commit() on success
+ - sequencer: simplify pick_one_commit()
+ - sequencer: remove unnecessary condition in pick_one_commit()
+ - sequencer: simplify handing of fixup with conflicts
+ - sequencer: remove unnecessary "or" in pick_one_commit()
+ - sequencer: never reschedule on failed commit
+ - sequencer: be more careful with external merge
+ - sequencer: move definition of is_final_fixup()
+ - t3400: restore coverage for note copying with apply backend
+
+ The rebase post-rewrite notes-copying logic has been corrected. When a
+ commit is dropped during rebase (e.g., because its changes are already
+ upstream), we no longer record it as rewritten, preventing its notes
+ from being copied to an unrelated commit.
+
+* jk/t5551-expensive-test-timeouts-fix (2026-06-28) 2 commits
+ - t5551: put many-tags case into its own repo
+ - t/lib-httpd: bump apache timeout
+ Expecting a reroll.
+ cf. <dce74d17-eefd-40bb-82f3-f6b3179cc2b6@gmail.com>
+ source: <cover.1782833268.git.phillip.wood@dunelm.org.uk>
+
+ The Apache timeout in HTTP tests has been increased to prevent test
+ failures on heavily loaded CI runners. The tests creating an
+ enormous number of refs have been isolated to their own
+ repositories to avoid slowing down subsequent tests.
+  cf. <akIPBJLtPqDjQt-A@pks.im>
+ source: <20260628075716.GA3525066@coredump.intra.peff.net>
+
+* jk/bloom-leak-fixes (2026-06-30) 3 commits
+ - line-log: drop extra copy of range with bloom filters
+ - revision: avoid leaking bloom keyvecs with multiple traversals
+ - bloom: make bloom-filter slab initialization idempotent
+
+* js/http-https-proxy-fix (2026-06-27) 1 commit
+  (merged to 'next' on 2026-06-28 at a7fdf2ec97)
+ + http: accept https:// proxies again
+ Plug various memory leaks in the Bloom-filter code paths that are
+ exposed when running tests with the
+ `GIT_TEST_COMMIT_GRAPH_CHANGED_PATHS=1` environment variable.
+
+ We lost ability to use https:// proxies during this cycle; this is
+ a hotfix for the regression.
+
+ source: <pull.2161.git.1782580676734.gitgitgadget@gmail.com>
+ Will merge to 'next'?
+ cf. <xmqqo6gqobrt.fsf@gitster.g>
+ source: <20260701063538.GA2579765@coredump.intra.peff.net>
+
+
+* ps/t4216-tap-fix (2026-06-19) 1 commit
+  (merged to 'next' on 2026-06-25 at 42296fc12e)
+ + t4216: fix no-op test that breaks TAP output
+* js/ci-dockerized-pid-limit (2026-07-01) 1 commit
+ - ci(dockerized): reduce the PID limit for private repositories
+
+ TAP output breakage fix.
+ cf. <xmqq8q82fk8r.fsf@gitster.g>
+ source: <20260619-pks-t4216-drop-unused-prereq-v1-1-2ce0d7bea088@pks.im>
+ Dockerized CI jobs running in private GitHub repositories have been
+ adjusted to use explicit process and file limits, preventing resource
+ exhaustion errors on private runners.
+
+ Waiting for response(s) to review comment(s).
+ cf. <xmqq5x2yps4c.fsf@gitster.g>
+ source: <pull.2164.git.1782889484346.gitgitgadget@gmail.com>
+
+
+* js/coverity-fixes (2026-07-01) 13 commits
+ - mingw: make exit_process() own the process handle on all paths
+ - fsmonitor: plug token-data leak on early daemon-startup failures
+ - reftable/table: release filter on error path
+ - imap-send: avoid leaking the IMAP upload buffer
+ - worktree: fix resource leaks when branch creation fails
+ - submodule: fix cwd leak in get_superproject_working_tree()
+ - dir: free allocations on parse-error paths in read_one_dir()
+ - line-log: avoid redundant copy that leaks in process_ranges
+ - run_diff_files: avoid memory leak
+ - run-command: avoid close(-1) in start_command() error paths
+ - download_https_uri_to_file(): do not leak fd upon failure
+ - loose: avoid closing invalid fd on error path
+ - load_one_loose_object_map(): fix resource leak
+
+ A collection of fixes for various resource leaks, invalid file
+ descriptor closures, and process handle ownership issues flagged by
+ Coverity.
+
+ Waiting for response(s) to review comment(s).
+ cf. <akTIMM6qLfDNdg-a@pks.im>
+ source: <pull.2163.git.1782889472.gitgitgadget@gmail.com>
+
+--------------------------------------------------
+[Stalled]
+
+* ap/http-redirect-wwwauth-fix (2026-06-02) 1 commit
+ - http: preserve wwwauth_headers across redirects
+
+ When cURL follows a redirect, the WWW-Authenticate headers from the
+ redirect target were lost because credential_from_url() cleared the
+ credential state. This has been fixed by preserving the collected
+ headers across the redirect update.
+
+ Expecting a reroll for too long, stalled.
+ cf. <5144a29d-a53f-4446-beff-e1f549345bf9@nvidia.com>
+ source: <20260602161150.1527493-1-aplattner@nvidia.com>
+
+
+* jt/config-lock-timeout (2026-05-17) 1 commit
+ - config: retry acquiring config.lock, configurable via core.configLockTimeout
+
+@@ -177,14 +268,57 @@ Release tarballs are available at:
+--------------------------------------------------
+[Cooking]
+
+* tb/repack-geometric-cruft (2026-06-28) 11 commits
+ - SQUASH??? bare grep !???
+ - repack: support combining '--geometric' with '--cruft'
+ - pack-objects: support '--refs-snapshot' with 'follow-reachable'
+ - pack-objects: introduce '--stdin-packs=follow-reachable'
+ - pack-objects: extract `stdin_packs_add_all_pack_entries()`
+ - repack-geometry: drop unused redundant-pack removal
+ - repack: delete geometric packs via existing_packs
+ - repack: teach MIDX retention about geometric rollups
+ - repack: mark geometric progression of packs as retained
+ - repack: extract `locate_existing_pack()` helper
+ - repack: unconditionally exclude non-kept packs
+
+ Teach `git repack` to accept `--geometric` and `--cruft`
+ together. When both are given, the geometric repack rolls up non-cruft
+ packs as usual, while a separate cruft pack is written to collect
+ unreachable objects.
+
+ Expecting a reroll.
+ cf. <akTIMM6qLfDNdg-a@pks.im>
+ source: <cover.1782500507.git.me@ttaylorr.com>
+
+
+* jk/reftable-leakfix (2026-06-28) 1 commit
+ - reftable: fix unlikely leak on API error
+
+ Leakfix.
+
+ Will merge to 'next'.
+ cf. <akIPBJLtPqDjQt-A@pks.im>
+ source: <20260628090314.GA661068@coredump.intra.peff.net>
+
+
+* sg/t3420-do-not-grep-in-missing-file (2021-10-10) 1 commit
+  (merged to 'next' on 2026-06-29 at 2bf33c6a40)
+ + t3420-rebase-autostash: don't try to grep non-existing files
+
+ Test fix.
+
+ Will merge to 'master'.
+ source: <20211010172809.1472914-1-szeder.dev@gmail.com>
+
+
+* ad/gpg-strip-cr-before-lf (2026-06-24) 1 commit
+ - gpg-interface: fix strip_cr_before_lf to only remove CR before LF
+
+ The GPG and SSH signature parsing code has been corrected to strip
+ carriage return characters only when they immediately precede line
+ feeds, instead of unconditionally stripping all carriage returns.
+
+ Needs review.
+ Will merge to 'next'.
+ source: <20260624093618.17456-1-antonio.destefani08@gmail.com>
+
+
+@@ -200,8 +334,10 @@ Release tarballs are available at:
+ interfaces instead of directly managing tmp_objdir for staging
+ incoming objects, bringing it closer to being ODB backend agnostic.
+
+ Waiting for response(s) to review comment(s).
+ Expecting a reroll.
+ cf. <aju_AmlKVi5UZaiQ@pks.im>
+ cf. <akK05yZ6843K8Vdd@denethor>
+ cf. <akLLB_J-pvJ7iR7c@denethor>
+ source: <20260624041920.2601961-1-jltobler@gmail.com>
+
+
+@@ -219,7 +355,9 @@ Release tarballs are available at:
+ refactoring backend-specific object information retrieval into an
+ opt-in struct object_info_source structure.
+
+ Needs review.
+ Will merge to 'next'?
+ cf. <akOod6X1a2axIXKZ@pks.im>
+ cf. <xmqqv7b0rmt6.fsf@gitster.g>
+ source: <20260624-b4-pks-odb-drop-whence-v1-0-8d1877b790ac@pks.im>
+
+
+@@ -252,7 +390,7 @@ Release tarballs are available at:
+ "git push origin/main" and "git branch origin main" could both be
+ an obvious typo, in which case offer the obvious typofix.
+
+ Will merge to 'next'?
+ Will merge to 'next'.
+ cf. <xmqqfr272lq7.fsf@gitster.g>
+ source: <pull.2331.v3.git.git.1782583345.gitgitgadget@gmail.com>
+
+@@ -262,39 +400,39 @@ Release tarballs are available at:
+
+ Code clean-up with leakfix for a write file stream.
+
+ Needs review.
+ Will merge to 'next'?
+ cf. <akO1mhi2u2PntLbt@pks.im>
+ source: <xmqqmrwdxrat.fsf@gitster.g>
+
+
+* ty/migrate-excludes-file (2026-06-27) 1 commit
+* ty/migrate-excludes-file (2026-06-30) 1 commit
+ - environment: move excludes_file into repo_config_values
+
+ Move excludes_file global variable into per-repository structure.
+
+ Waiting for response(s) to review comment(s).
+ cf. <xmqqbjcv2h3j.fsf@gitster.g>
+ cf. <CAP8UFD3Z0M_1NEXGcAxNZKpRUQiSkHZLTEvNNYushKA_PoPgjA@mail.gmail.com>
+ source: <20260627160813.1074201-2-cat@malon.dev>
+ Needs review.
+ source: <20260630164401.2906091-2-cat@malon.dev>
+
+
+* kk/merge-base-exhaustion (2026-06-28) 8 commits
+ - commit-reach: move min_generation check into paint_queue_get()
+ - commit-reach: terminate merge-base walk when one paint side is exhausted
+ - commit-reach: remove unused nonstale_queue dedup wrappers
+ - commit-reach: introduce struct paint_state with per-side counters
+ - commit-reach: add trace2 instrumentation to paint_down_to_common()
+ - t6099, t6600: add side-exhaustion regression tests
+ - t6600: add test cases for side-exhaustion edge cases
+ - Documentation/technical: add paint-down-to-common doc
+* kk/merge-base-exhaustion (2026-07-01) 10 commits
+ . commit-reach: remove commit-date ordering fallback
+ . commit-reach: move min_generation check into paint_queue_get()
+ . commit-reach: terminate merge-base walk when one paint side is exhausted
+ . commit-reach: introduce struct paint_state with per-side counters
+ . t6600: add clock-skew topologies and step counts for edge cases
+ . commit-reach: add trace2 instrumentation to paint_down_to_common()
+ . t6099, t6600: add side-exhaustion regression tests
+ . t6600: add test cases for side-exhaustion edge cases
+ . test-lib-functions: improve diagnostic output for trace2 data assertions
+ . Documentation/technical: add paint-down-to-common doc
+
+ The merge-base computation has been optimized by stopping the walk
+ early when one side's exclusive commits in the queue are exhausted,
+ yielding significant speedups for queries with one-sided histories.
+
+ Expecting a reroll.
+ cf. <48bfdb11-2624-4aa6-8fbd-d3f894c33bcc@gmail.com>
+ cf. <CAL71e4N92t8170UBW3rMA6B-rEUeOm-R_HSioB957mUKOpwRyQ@mail.gmail.com>
+ source: <pull.2149.v4.git.1782649547.gitgitgadget@gmail.com>
+ Needs review.
+ passes t6600 standalone, breaks when merged to 'seen'.
+ source: <pull.2149.v5.git.1782923832.gitgitgadget@gmail.com>
+
+
+* dk/meson-enable-use-nsec-build (2026-06-20) 1 commit
+@@ -328,8 +466,7 @@ Release tarballs are available at:
+ source: <20260625-pks-connected-generic-promisor-checks-v3-0-7308f3b9dc44@pks.im>
+
+
+* ps/libgit-in-subdir (2026-06-26) 4 commits
+ - fixup??? Move libgit.a sources into separate "lib/" directory
+* ps/libgit-in-subdir (2026-06-30) 3 commits
+ - Move libgit.a sources into separate "lib/" directory
+ - t/helper: prepare "test-example-tap.c" for introduction of "lib/"
+ - Merge branch 'ps/odb-source-packed' into ps/libgit-in-subdir
+@@ -340,10 +477,8 @@ Release tarballs are available at:
+ library code.
+
+ Waiting for response(s) to review comment(s).
+ cf. <32bb1cf6-1e37-dc0c-dfb2-e78a30763342@gmx.de>
+ cf. <xmqqwlvl6sr5.fsf@gitster.g>
+ cf. <aj9wcFEb6oCRnfn2@szeder.dev>
+ source: <20260622-pks-libgit-in-subdir-v2-0-cb946c51ee7b@pks.im>
+ cf. <cbbb08fc-fd4d-45ef-927b-05ac44602ff1@gmail.com>
+ source: <20260701-pks-libgit-in-subdir-v3-0-5e4860056094@pks.im>
+
+
+* ps/odb-generalize-prepare (2026-06-22) 3 commits
+@@ -357,8 +492,8 @@ Release tarballs are available at:
+ flag, and a new `odb_prepare()` wrapper has been introduced to
+ allow pre-opening object database sources.
+
+ Waiting for response(s) to review comment(s).
+ cf. <87ldc14i4n.fsf@emacs.iotcl.com>
+ Will merge to 'next'?
+ cf. <87ik704f1j.fsf@emacs.iotcl.com>
+ source: <20260622-b4-pks-odb-generalize-prepare-v1-0-d2a5c5d13144@pks.im>
+
+
+@@ -371,7 +506,7 @@ Release tarballs are available at:
+ and how the resolution of such critiques should be recorded in the
+ final commit messages.
+
+ Will cook in 'next'.
+ Will merge to 'master'.
+ cf. <ajjwYGWZ6hQWr600@pks.im>
+ source: <xmqqeci0g4mz.fsf@gitster.g>
+
+@@ -433,6 +568,7 @@ Release tarballs are available at:
+ Waiting for response(s) to review comment(s).
+ cf. <xmqqse65zyhw.fsf@gitster.g>
+ cf. <akIQLM6xZTHBudWT@pks.im>
+ cf. <3b3af3ef-a043-4af9-964e-429237789c97@gmail.com>
+ post-source: <pull.2337.v6.git.git.1782635349.gitgitgadget@gmail.com>
+
+
+@@ -451,12 +587,12 @@ Release tarballs are available at:
+ provide a default for the per-remote `remote.<name>.followRemoteHEAD`
+ setting.
+
+ your cook in 'next'.
+ your merge to 'master'.
+ bc. <xmqqcxxp1j2t.fsf
